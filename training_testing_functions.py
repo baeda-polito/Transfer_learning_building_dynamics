@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
-from functions import import_file, min_max_T, normalization, split_multistep_sequences, mean_absolute_percentage_error, create_data, define_period
+from utils import import_file, min_max_T, normalization, split_multistep_sequences, mean_absolute_percentage_error, create_data, define_period
 
 
 def train_model(model, epochs, train_dl, optimizer, criterion, train_batch_size, min_T, max_T, train_metrics_path, loss_path, lr_scheduler='', mode=''):

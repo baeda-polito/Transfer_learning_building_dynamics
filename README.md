@@ -6,36 +6,49 @@ The repository is associated to the paper "Sharing is Caring: Statistical invest
 The repository is structured as follows:
 
 ## Files
-    main.py
+    data_extraction.py
 
-    main.ipynb
-
-    citylearn_3dem.py
-
-    energy_models.py
+    main_ML.py
     
-    functions.py
-
-    agent.py
-
-    reward_function.py
+    main_TL.py
     
+    models.py
+    
+    requirements.txt
+    
+    training_testing_functions.py
+    
+    utils.py
+
     data
 
-        └── Climate_Zone_1
-
-            ├── building_attributes.json
-
-            ├── electricity_price.csv
-
-            ├── min.csv
+    models
+    
+        ├── ML
             
-            ├── max.csv
+            ├── 1_month
+            
+            ├── 1_week
+        
+            └── 1_year
+        
+        └── TL
+            
+            ├── 1_month
+            
+            ├── 1_week
+        
+            └── 1_year
+    
+    other_results
+    
+    results
 
-            ├── weather_data.csv
+The folders: models, other_results and results share the same architecture.
+The file are organized based on the technique used (ML or TL) and the data availability (1week,1month,1year).
+Each file has been named as follow:
 
-            └── Building_i.csv
+ML --> {Zone}_{Climate}_{Occupancy}_{Technique}_{Training data}{Testing data}
+TL --> {Zone}_{Climate}_{Occupancy}_{Technique}_{Source data}{Testing/Fine-tuning data}
 
-    building_models
-
-        └── Building_i.pth
+Usually for TL the fine-tuning and testing period are the same. The only exception is the case of "1month1year", that means that the model was fine-tuned on 1 year of data and tested on 1 month of data.

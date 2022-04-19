@@ -1,8 +1,8 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 import pandas as pd
-from functions import import_file, min_max_T, normalization, create_data, split_multistep_sequences, split_sequences, mean_absolute_percentage_error, define_period
-from NN_architectures import LSTM
+from utils import import_file, min_max_T, normalization, create_data, split_multistep_sequences, split_sequences, mean_absolute_percentage_error, define_period
+from models import LSTM
 from training_testing_functions import train_model, test_model
 
 # _______________________________________________IMPORT DATASET_________________________________________________________
