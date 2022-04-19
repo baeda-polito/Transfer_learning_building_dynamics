@@ -220,86 +220,12 @@ def get_data(clm, eff, year, occ):
     df = pd.concat([ht_thermostat, cl_thermostat, occup, mfr, vav_dp, t_out, day_ix, rad, hum, mean_T], axis=1)
     return df
 
-
-
 clm = '3C'
 eff = 'High'
 occ = 'run_1'
 zone = 'CONFROOM_BOT_1'
 
-#df_2009 = get_data(clm=clm, eff=eff, year='2009', occ=occ)
-#df_2010 = get_data(clm=clm, eff=eff, year='2010', occ=occ)
-#df_2011 = get_data(clm=clm, eff=eff, year='2011', occ=occ)
-#df_2012 = get_data(clm=clm, eff=eff, year='2012', occ=occ)
 df_2017 = get_data(clm=clm, eff=eff, year='2017', occ=occ)
-
-
-#df_2005 = get_data(clm=clm, eff=eff, year='2005', occ=occ)
-#df_2006 = get_data(clm=clm, eff=eff, year='2006', occ=occ)
-#df_2007 = get_data(clm=clm, eff=eff, year='2007', occ=occ)
-#df_2008 = get_data(clm=clm, eff=eff, year='2008', occ=occ)
-#df_2009 = get_data(clm=clm, eff=eff, year='2009', occ=occ)
-
-
-#df_2000 = get_data(clm=clm, eff=eff, year='2000', occ=occ)
-#df_2001 = get_data(clm=clm, eff=eff, year='2001', occ=occ)
-#df_2002 = get_data(clm=clm, eff=eff, year='2002', occ=occ)
-#df_2003 = get_data(clm=clm, eff=eff, year='2003', occ=occ)
-#df_2004 = get_data(clm=clm, eff=eff, year='2004', occ=occ)
 df_TMY = get_data(clm=clm, eff=eff, year='TMY3', occ=occ)
-
-#df_2006.to_csv('data/{}_{}_{}_2006_{}.csv'.format(zone,clm, eff, occ))
-#df_2005.to_csv('data/{}_{}_{}_2005_{}.csv'.format(zone,clm, eff, occ))
-#df_2007.to_csv('data/{}_{}_{}_2007_{}.csv'.format(zone,clm, eff, occ))
-#df_2008.to_csv('data/{}_{}_{}_2008_{}.csv'.format(zone,clm, eff, occ))
-#df_2009.to_csv('data/{}_{}_{}_2009_{}.csv'.format(zone,clm, eff, occ))
-
-#df_2000.to_csv('data/{}_{}_{}_2000_{}.csv'.format(zone,clm, eff, occ))
-#df_2001.to_csv('data/{}_{}_{}_2001_{}.csv'.format(zone,clm, eff, occ))
-#df_2002.to_csv('data/{}_{}_{}_2002_{}.csv'.format(zone,clm, eff, occ))
-#df_2003.to_csv('data/{}_{}_{}_2003_{}.csv'.format(zone,clm, eff, occ))
-#df_2004.to_csv('data/{}_{}_{}_2004_{}.csv'.format(zone,clm, eff, occ))
 df_TMY.to_csv('data/{}_{}_{}_TMY3_{}.csv'.format(zone,clm, eff, occ))
-
-#df_2013.to_csv('data/{}_{}_2013_{}.csv'.format(clm, eff, occ))
-#df_2014.to_csv('data/{}_{}_2014_{}.csv'.format(clm, eff, occ))
-#df_2015.to_csv('data/{}_{}_2015_{}.csv'.format(clm, eff, occ))
-#df_2016.to_csv('data/{}_{}_2016_{}.csv'.format(clm, eff, occ))
 df_2017.to_csv('data/{}_{}_{}_2017_{}.csv'.format(zone,clm, eff, occ))
-
-
-
-
-# # Plotting
-# plt.plot(cooling_thermostat['CONFROOM_BOT_1 ZN:Zone Thermostat Cooling Setpoint Temperature[C]'], label='cooling')
-# plt.plot(heating_thermostat['CONFROOM_BOT_1 ZN:Zone Thermostat Heating Setpoint Temperature[C]'], label='heating')
-# plt.plot(occupancy['CONFROOM_BOT_1 ZN:Zone People Occupant Count[]'], label='occupancy')
-# plt.plot(mean_temperature['CONFROOM_BOT_1 ZN:Zone Mean Air Temperature[C]'], label='mean_T')
-# plt.plot(mass_flow_rate['CONFROOM_BOT_1 ZN:Zone Mechanical Ventilation Mass Flow Rate[kg/s]']*100, label='mass flow rate')
-# plt.legend()
-# plt.xlim(200, 250)
-# plt.show()
-
-
-
-# TODO: create a dataset for each year about San Francisco and than concatenate all of them to create a
-#  unique dataset for standard efficiency.
-"""
-# in str_eff non posso mettere un int ma una stringa, quindi creo una lista di stringhe con tutti gli anni
-
-list_years = ['1988', '1989', '1990', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009']
-#list_years = ['1988', '1989', '1990', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009']
-
-#'1980', '1981', '1982', '1983', '1984', '1985', '1986', '1987', '1988', '1989', '1990', '1991', '1992', '1993', '1994', '1995', '1996',
-
-df_tot = pd.DataFrame()
-df = pd.DataFrame()
-for year in list_years:
-    df = get_ts_data(hdf, str_clm='3C', str_eff='Standard', str_yr=year, str_run='run_2') # non prende dal 1980 al 1996
-    df_tot = pd.concat([df_tot, df], axis=0) #, columns=cols
-    #df_tot = df_tot.append(df)
-    #df = pd.DataFrame()
-
-df_tot.to_csv('df_tot_from_2000_to_2009.csv')
-
-"""

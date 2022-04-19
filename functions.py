@@ -84,13 +84,13 @@ def normalization(df):
 
 def define_period(df, train_time, test_period):
     if train_time == '1_week':
-        l_train = 1008+48 # 1008 timestep alla settimana
+        l_train = 1008+48 # 1008 timestep in a week
         l_test = int(l_train*2)
     if train_time == '1_month' or '1_month1year':
         l_train = 4464
         l_test = int(l_train *2)
     if train_time == '1_year':
-        l_train = int(0.5 * len(df))  # in questo caso in input inserirò due anni, per cui la metà in training e l'altra in testing
+        l_train = int(0.5 * len(df))
         if test_period == '1_week':
             l_test = int(l_train + 1056)
         if test_period == '1_month' or '1_month1year':
@@ -190,6 +190,7 @@ def save_file(obj, TL, TLorML, col1, col2, num_training_years, testing_time, zon
         np_dt = pd.DataFrame(np, columns=['y_pred_train', 'y_real_train'])
     if obj == 'test_error' and (TL == 'fe' or TL == 'ML'):
         np_dt = pd.DataFrame(np, columns=['y_pred_test', 'y_real_test'])
+    #modify path accordingly
     excel_path = 'C:\\Users\\ricme\\Desktop\\Politecnico\\Tesi magistrale\\TL_coding\\meta_data\\code\\thesis_project\\'+TLorML+'\\'+num_training_years+'\\'+testing_time+'\\'+ zone + '_' + clm + '_' + eff + '_' + occ + '_(' + TL + ')_'+obj+'.csv'
     np_dt.to_csv(excel_path)
 
@@ -198,9 +199,3 @@ def save_file(obj, TL, TLorML, col1, col2, num_training_years, testing_time, zon
 def mean_absolute_percentage_error(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
-#
-# def mean_absolute_percentage_error_for_tensors(y_true, y_pred):
-#     flatten = lambda l: [item for sublist in l for item in sublist]
-#     y_true, y_pred = y_true.detach().numpy(),  y_pred.detach().numpy()
-#     y_true, y_pred = np.array(flatten(y_true), dtype=float), np.array(flatten(y_pred), dtype=float)
-#     return np.mean(np.abs((y_true - y_pred) / y_true)).mean() * 100
