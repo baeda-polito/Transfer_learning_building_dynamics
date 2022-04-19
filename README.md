@@ -49,6 +49,7 @@ The file are organized based on the technique used (ML or TL) and the data avail
 Each file has been named as follow:
 
 ML --> {Zone}_{Climate}_{Occupancy}_{Technique}_{Training data}{Testing data}
+
 TL --> {Zone}_{Climate}_{Occupancy}_{Technique}_{Source data}{Testing/Fine-tuning data}
 
 Usually for TL the fine-tuning and testing period are the same. The only exception is the case of "1month1year", that means that the model was fine-tuned on 1 year of data and tested on 1 month of data.
