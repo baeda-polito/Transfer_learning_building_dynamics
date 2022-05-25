@@ -2,8 +2,8 @@ import torch
 from torch.utils.data import DataLoader, TensorDataset
 import pandas as pd
 import numpy as np
-from utils import import_file, min_max_T, normalization, split_multistep_sequences, mean_absolute_percentage_error, create_data, define_period
-from utils_deploy import define_period_deploy
+from utils import import_file, min_max_T, normalization, split_multistep_sequences, mean_absolute_percentage_error, define_period
+from utils_deploy import define_period_deploy, create_data_SW
 from models import LSTM
 from training_testing_functions import train_model, test_model
 
@@ -13,11 +13,12 @@ clm ='5A'
 eff = 'High'
 year = 'TMY3'
 occ = 'run_1'
+mode = 'SW_ML'
 
 
 weeks = np.arange(37, 52)
 #for debugging purposes
-#weeks = [3,4,5]
+weeks = [3,12,18]
 #week = 1
 result_by_epoch = pd.DataFrame()
 
@@ -33,7 +34,7 @@ for week in weeks:
     df = normalization(df)
     l_train, l_test = define_period_deploy(week)
     period = 6
-    train_df, test_df = create_data(df=df, col_name=zone+' ZN:Zone Mean Air Temperature[C]', l_train=l_train, period=period, l_test=l_test)
+    train_df, test_df = create_data_SW(df=df, col_name=zone+' ZN:Zone Mean Air Temperature[C]', l_train=l_train, period=period, l_test=l_test)
     train_df, test_df = train_df.to_numpy(), test_df.to_numpy()
     # ________________________________________Splitting in X, Y data________________________________________________________
     n_steps = 48 # (8 hours)
@@ -64,30 +65,17 @@ for week in weeks:
     model = LSTM(num_classes=n_outputs, input_size=n_features, hidden_size=num_hidden, num_layers=num_layers)
     criterion = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    epochs = 80
+    epochs = 2
     # # Training
-    train_metrics_path = 'deployment\\' + str(week) +'_train_metrics.csv'
-    loss_path = 'deployment\\' + str(week) +'_train_loss.csv'
-    test_metrics_path = 'deployment\\' + str(week) +'_test_metrics.csv'
-    results_path = 'deployment\\' + '_results_by_epoch.csv'
-    model_path = 'deployment\\' + str(week) +'_weights.pth'
-    #train_loss, train_metrics = train_model(model, epochs=epochs, train_dl=train_dl, optimizer=optimizer, criterion=criterion, train_batch_size=train_batch_size, min_T=min_T, max_T=max_T, train_metrics_path=train_metrics_path, loss_path=loss_path)
-    #torch.save(model.state_dict(), model_path)
+    train_metrics_path = 'deployment\\SW_ML\\' + str(week) + mode +'_train_metrics.csv'
+    loss_path = 'deployment\\SW_ML\\' + str(week) +mode +'_train_loss.csv'
+    test_metrics_path = 'deployment\\SW_ML\\' + str(week) +mode +'_test_metrics.csv'
+    results_path = 'deployment\\SW_ML\\' + '_results_by_epoch.csv'
+    model_path = 'deployment\\SW_ML\\' + str(week) +'_weights.pth'
+    train_loss, train_metrics = train_model(model, epochs=epochs, train_dl=train_dl, optimizer=optimizer, criterion=criterion, train_batch_size=train_batch_size, min_T=min_T, max_T=max_T, train_metrics_path=train_metrics_path, loss_path=loss_path)
+    torch.save(model.state_dict(), model_path)
     # Testing
-    torch.load(model.state_dict(), model_path)
     y_pred, y_lab, test_metrics = test_model(model=model, test_dl=test_dl, maxT=max_T, minT=min_T, batch_size=test_batch_size, test_metrics_path=test_metrics_path)
     test_results = pd.read_csv(test_metrics_path, encoding='latin1')
     result_by_epoch =  result_by_epoch.append(test_metrics)
     results_by_epoch = result_by_epoch.to_csv(path_or_buf=results_path, sep=',', decimal='.', index=False)
-b = 3
-
-weeks = np.arange(1, 38)
-week = 1
-results_path = 'deployment\\' + '_results_by_epoch.csv'
-result_by_epoch = pd.DataFrame()
-for week in weeks:
-    result = pd.read_csv('deployment\\' + str(week) + '_test_metrics.csv')
-    result_by_epoch = result_by_epoch.append(result)
-
-results_by_epoch = result_by_epoch.to_csv(path_or_buf=results_path, sep=',', decimal='.', index=False)
-

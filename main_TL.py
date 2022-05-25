@@ -1,5 +1,6 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
+from torch.optim import lr_scheduler
 import pandas as pd
 from utils import import_file, min_max_T, normalization, create_data, split_multistep_sequences, split_sequences, mean_absolute_percentage_error, define_period
 from models import LSTM
@@ -141,6 +142,21 @@ def freeze_params(model):
     return model
 
 # ______________________________________________________________________________________________________________________
+
+#DEFINE CRITERION, OPTIMIZER WITH SMALLER LR RATE AND LR SCHEDULER_____________________________________________________
+criterion1 = torch.nn.MSELoss()
+
+lr1 = 0.002
+optimizer_fe = torch.optim.SGD(filter(lambda p: p.requires_grad, model_fe.parameters()), lr=lr1)
+optimizer_wi = torch.optim.SGD(filter(lambda p: p.requires_grad, model_wi.parameters()), lr=lr1)
+
+# Decay LR (learning rate) by a factor of 0.1 every 7 epochs
+step_size1 = 100
+lr_scheduler_fe = lr_scheduler.StepLR(optimizer_fe, step_size=step_size1, gamma=0.1, verbose=True)  # gamma=0.1 by default
+lr_scheduler_wi = lr_scheduler.StepLR(optimizer_wi, step_size=step_size1, gamma=0.1, verbose=True)
+
+
+
 
 def transfer(TL=''):
 
