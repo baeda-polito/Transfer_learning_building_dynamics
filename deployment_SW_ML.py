@@ -9,16 +9,17 @@ from training_testing_functions import train_model, test_model
 
 #dataset load and normalization
 zone = 'CONFROOM_BOT_1'
-clm ='5A'
+clm ='3C'
 eff = 'High'
 year = 'TMY3'
-occ = 'run_1'
+occ = 'run_2'
+source_period = '1_year'
 mode = 'SW_ML'
 
 
-weeks = np.arange(37, 52)
+weeks = np.arange(1, 52)
 #for debugging purposes
-weeks = [3,12,18]
+#weeks = [3,12,18]
 #week = 1
 result_by_epoch = pd.DataFrame()
 
@@ -65,7 +66,7 @@ for week in weeks:
     model = LSTM(num_classes=n_outputs, input_size=n_features, hidden_size=num_hidden, num_layers=num_layers)
     criterion = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    epochs = 2
+    epochs = 80
     # # Training
     train_metrics_path = 'deployment\\SW_ML\\' + str(week) + mode +'_train_metrics.csv'
     loss_path = 'deployment\\SW_ML\\' + str(week) +mode +'_train_loss.csv'

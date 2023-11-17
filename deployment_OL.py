@@ -23,7 +23,7 @@ del df['Environment:Site Outdoor Air Relative Humidity[%]']
 max_T, min_T = min_max_T(df=df, column=zone + ' ZN:Zone Mean Air Temperature[C]')
 df = normalization(df)
 
-weeks = np.arange(1, 52)
+weeks = np.arange(3, 11)
 #for debugging purposes
 #weeks = [3,4,5]
 #week = 1
@@ -50,7 +50,7 @@ for week in weeks:
     # ================================================= LSTM Structure =====================================================
     # HYPER PARAMETERS
     lookback = 48
-    lr = 0.008 #0.008 0.005 #0.009
+    lr = 0.002 #0.008 0.005 #0.009
     num_layers = 3 # per ogni modulo lstm
     num_hidden = 175
     # generalize the number of features, timesteps and outputs
@@ -64,15 +64,21 @@ for week in weeks:
     test_data = TensorDataset(test_X, test_Y)
     test_dl = DataLoader(test_data, shuffle=False, batch_size=test_batch_size, drop_last=True)
     model = LSTM(num_classes=n_outputs, input_size=n_features, hidden_size=num_hidden, num_layers=num_layers)
+    if week == 3:
+        model_load_wi = 'deployment\\ML\\' + str(week) +'_weights.pth'
+    else:
+        model_load_wi = 'deployment\\O_ML\\' + str(week-1) +'_weights.pth'
+
+    model.load_state_dict(torch.load(model_load_wi))
     criterion = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     epochs = 80
     # # Training
-    train_metrics_path = 'deployment\\ML\\' + str(week) +'_train_metrics.csv'
+    train_metrics_path = 'deployment\\O_ML\\' + str(week) +'_train_metrics.csv'
     loss_path = 'deployment\\ML\\' + str(week) +'_train_loss.csv'
-    test_metrics_path = 'deployment\\ML\\' + str(week) +'_test_metrics.csv'
-    results_path = 'deployment\\ML\\' + '_results_by_epoch.csv'
-    model_path = 'deployment\\ML\\' + str(week) +'_weights.pth'
+    test_metrics_path = 'deployment\\O_ML\\' + str(week) +'_test_metrics.csv'
+    results_path = 'deployment\\O_ML\\' + '_results_by_epoch.csv'
+    model_path = 'deployment\\O_ML\\' + str(week) +'_weights.pth'
     train_loss, train_metrics = train_model(model, epochs=epochs, train_dl=train_dl, optimizer=optimizer, criterion=criterion, train_batch_size=train_batch_size, min_T=min_T, max_T=max_T, train_metrics_path=train_metrics_path, loss_path=loss_path)
     torch.save(model.state_dict(), model_path)
     # Testing
